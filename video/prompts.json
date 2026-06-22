@@ -1,0 +1,30 @@
+[
+    {
+        "prompt": "By default the v6 model with a 5-second 720p 16:9 clip will be used."
+    },
+    {
+        "model": "v6",
+        "duration": 15,
+        "quality": "1080p",
+        "aspect_ratio": "16:9",
+        "audio": true,
+        "multi_shot": true,
+        "prompt": "PixVerse V6 with integrated audio and multi-shot storytelling. A dramatic courtroom scene with multiple camera angles. For all parameters see https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4"
+    },
+    {
+        "model": "v5.6",
+        "duration": 8,
+        "quality": "1080p",
+        "first_frame_path": "./first_frame.webp",
+        "audio": true,
+        "prompt": "Image-to-video: the local image is uploaded via POST files and passed as first_frame_path. Note: aspect_ratio is derived from the image and must NOT be set for i2v."
+    },
+    {
+        "model": "seedance-2.0",
+        "duration": 5,
+        "quality": "720p",
+        "aspect_ratio": "16:9",
+        "off_peak_mode": false,
+        "prompt": "Third-party models (seedance-2.0, kling-o3, veo-3.1-fast, sora-2, grok-imagine, happyhorse-1.0, …) are selectable via the model field. They reject native-only flags such as off_peak_mode, preview_mode, multi_shot and seed."
+    }
+]
