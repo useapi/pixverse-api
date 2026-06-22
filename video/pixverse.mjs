@@ -206,7 +206,7 @@ async function submitVideo(apiToken, email, prompt, index) {
         first_frame_path: framePath,
         duration,
         quality,
-        // aspect_ratio is required for text-to-video, not accepted for image-to-video
+        // aspect_ratio applies only to text-to-video and is optional (the server defaults to 16:9 when omitted); for image-to-video it is derived from the image
         aspect_ratio: framePath ? undefined : aspect_ratio,
         audio,
         multi_shot,
@@ -383,7 +383,7 @@ async function execute(apiToken, email, promptFile) {
 
     for (let i = 1; i <= prompts.length; i++) {
         const prompt = prompts[i - 1];
-        const { prompt: text, first_frame_path, aspect_ratio, template_id } = prompt;
+        const { prompt: text, first_frame_path, template_id } = prompt;
 
         if (first_frame_path) {
             try {
@@ -405,10 +405,6 @@ async function execute(apiToken, email, promptFile) {
         // prompt is optional only when a template_id supplies the generation.
         if (!text && !template_id)
             warnings.push(`⚠️  prompt is required (unless template_id is set). Prompt ${i}`);
-
-        // aspect_ratio is required for text-to-video, not accepted for image-to-video.
-        if (!first_frame_path && !template_id && !aspect_ratio)
-            warnings.push(`⚠️  aspect_ratio is required for text-to-video. Prompt ${i}`);
     }
 
     if (warnings.length > 0) {

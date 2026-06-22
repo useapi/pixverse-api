@@ -24,7 +24,6 @@
         "duration": 5,
         "quality": "720p",
         "aspect_ratio": "16:9",
-        "off_peak_mode": false,
         "prompt": "Third-party models (seedance-2.0, kling-o3, veo-3.1-fast, sora-2, grok-imagine, happyhorse-1.0, …) are selectable via the model field. They reject native-only flags such as off_peak_mode, preview_mode, multi_shot and seed."
     }
 ]
