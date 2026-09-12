@@ -1,6 +1,6 @@
 # PixVerse V6 video — PixVerse API batch generation (Node.js)
 
-Batch-generate [PixVerse](https://pixverse.ai) **V6** (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts — Seedance 2.0, Kling V3 / O3, Veo 3.1, Sora 2, Grok Imagine, HappyHorse) video through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2) by [useapi.net](https://useapi.net/?utm_source=github&utm_medium=readme&utm_campaign=pixverse-api).
+Batch-generate [PixVerse](https://pixverse.ai) **V6** (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts — Seedance 2.0, Kling V3 / O3, Veo 3.1, Sora 2, Grok Imagine, HappyHorse) video through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
 📖 Full walkthrough: **[How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo)**
 
@@ -9,7 +9,7 @@ Batch-generate [PixVerse](https://pixverse.ai) **V6** (and `v5.6`, `v5.5`, `v5`,
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) v21 or newer (no dependencies to install — uses built-in `fetch`)
-- A useapi.net [API token](https://useapi.net/docs/start-here/setup-useapi?utm_source=github&utm_medium=readme&utm_campaign=pixverse-api)
+- A useapi.net [API token](https://useapi.net/docs/start-here/setup-useapi?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
 - A connected [PixVerse account](https://useapi.net/docs/start-here/setup-pixverse) email
 
 ## Usage
