@@ -1,7 +1,7 @@
 {
   "name": "pixverse-api",
   "version": "1.0.0",
-  "description": "Runnable Node.js examples for the PixVerse API by useapi.net — native PixVerse V6 / V5.x / C1 video (integrated audio, multi-shot, 900+ effect templates) plus the frontier models PixVerse hosts (Seedance 2.0, Kling V3 / O3, Veo 3.1, Sora 2 / Sora 2 Pro, Grok Imagine, HappyHorse) and images.",
+  "description": "Runnable Node.js examples for the PixVerse API by useapi.net, on your PixVerse subscription: native PixVerse V6, V5.x and C1 video (sound, multi-shot, more than 900 effect templates) plus the models PixVerse hosts (Seedance 2.5 and 2.0, Kling O3 and 3.0, Veo 3.1, Sora 2, MiniMax H3, Grok Imagine, HappyHorse 1.0) and images.",
   "author": "useapi.net",
   "license": "MIT",
   "type": "module",

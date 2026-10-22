@@ -1,16 +1,16 @@
 # PixVerse V6 video — PixVerse API batch generation (Node.js)
 
-Batch-generate [PixVerse](https://pixverse.ai) **V6** (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts — Seedance 2.0, Kling V3 / O3, Veo 3.1, Sora 2, Grok Imagine, HappyHorse) video through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
+Batch-generate [PixVerse](https://pixverse.ai) V6 video (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts, such as Seedance 2.5 and 2.0, Kling O3 and 3.0, Veo 3.1, MiniMax H3, Sora 2, Grok Imagine 1.5 and HappyHorse 1.0) on your [PixVerse subscription](https://app.pixverse.ai/subscribe) through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
-📖 Full walkthrough: **[How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo)**
+Full walkthrough: [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
 
-`pixverse.mjs` reads prompts from `prompts.json`, uploads any input frame image via [`POST /files`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-files), submits each job to [`POST /videos/create`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4) (default model `v6`), polls [`GET /videos/{video_id}`](https://useapi.net/docs/api-pixverse-v2/get-pixverse-videos-video_id) until each task is final, and downloads every finished MP4. All requests are served under the `/v2/pixverse/...` base path (for example `https://api.useapi.net/v2/pixverse/videos/create`).
+`pixverse.mjs` reads prompts from `prompts.json`, uploads any input frame image via [`POST /files`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-files?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api), submits each job to [`POST /videos/create`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) (default model `v6`), polls [`GET /videos/{video_id}`](https://useapi.net/docs/api-pixverse-v2/get-pixverse-videos-video_id?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) until each task is final, and downloads every finished MP4. All requests are served under the `/v2/pixverse/...` base path (for example `https://api.useapi.net/v2/pixverse/videos/create`).
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) v21 or newer (no dependencies to install — uses built-in `fetch`)
 - A useapi.net [API token](https://useapi.net/docs/start-here/setup-useapi?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
-- A connected [PixVerse account](https://useapi.net/docs/start-here/setup-pixverse) email
+- A connected [PixVerse account](https://useapi.net/docs/start-here/setup-pixverse?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) email. A free Basic account runs the PixVerse models up to 540p, and the third-party models need Pro or higher
 
 ## Usage
 
@@ -22,11 +22,11 @@ node ./pixverse.mjs <API_TOKEN> <EMAIL> [PROMPTS_FILE]
 
 ## Prompts
 
-`prompts.json` is an array of prompt objects. `prompt` is required (unless a `template_id` supplies the generation); for text-to-video `aspect_ratio` is optional (the server defaults to `16:9` when omitted). The default model is `v6` — pick another with the `model` field (`v6`, `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, or a third-party id such as `seedance-2.0` / `seedance-2.0-fast`, `kling-o3` / `kling-v3`, `veo-3.1-lite` / `veo-3.1-standard` / `veo-3.1-fast`, `sora-2` / `sora-2-pro`, `grok-imagine`, `happyhorse-1.0`). Toggle `audio: true` for integrated audio and, on `v6`, `multi_shot: true` for multi-shot storytelling. Native models also accept `off_peak_mode`, `preview_mode`, and `seed`; third-party models reject those flags. Every supported parameter is documented on [POST /videos/create](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4).
+`prompts.json` is an array of prompt objects. `prompt` is required (unless a `template_id` supplies the generation); for text-to-video `aspect_ratio` is optional (the server defaults to `16:9` when omitted). The default model is `v6` — pick another with the `model` field (`v6`, `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, or a third-party id such as `seedance-2.5`, `seedance-2.0` / `seedance-2.0-fast`, `kling-o3` / `kling-v3`, `veo-3.1-lite` / `veo-3.1-standard` / `veo-3.1-fast`, `minimax-h3`, `sora-2` / `sora-2-pro`, `grok-imagine` / `grok-imagine-1.5`, `happyhorse-1.0`). Toggle `audio: true` for sound and, on `v6`, `multi_shot: true` for multi-shot storytelling. Native models also accept `off_peak_mode`, `preview_mode`, and `seed`; third-party models reject those flags. Every supported parameter is documented on [POST /videos/create](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
 ## Image-to-video
 
-To animate a still, set `first_frame_path` to a **local image path** (`.png`, `.jpeg`, `.jpg`, `.gif`, `.webp`) — the script uploads it via [POST /files](https://useapi.net/docs/api-pixverse-v2/post-pixverse-files) and passes the returned path. For image-to-video the `aspect_ratio` is derived from the image and must **not** be set. Local image paths in `prompts.json` are inputs **you** supply — they are not included in this repo.
+To animate a still, set `first_frame_path` to a local image path (`.png`, `.jpeg`, `.jpg`, `.gif`, `.webp`) — the script uploads it via [POST /files](https://useapi.net/docs/api-pixverse-v2/post-pixverse-files?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) and passes the returned path. For image-to-video the `aspect_ratio` is derived from the image and must not be set. Local image paths in `prompts.json` are inputs you supply — they are not included in this repo.
 
 ---
 
