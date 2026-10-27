@@ -2,13 +2,13 @@
 
 Runnable Node.js examples for the [PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api), a third-party REST API for [PixVerse](https://pixverse.ai) by AIsphere. It uses your [PixVerse subscription](https://app.pixverse.ai/subscribe): Free (Basic), Standard $10, Pro $30, Premium $60, Ultra $199 or Team Ultra $199 a seat a month (as of October 2026).
 
-The API makes native PixVerse V6, V5.6, V5.5, V5, V5 Fast and C1 video (sound, multi-shot, more than 900 effect templates, Off-Peak mode) plus the models PixVerse hosts: Seedance 2.5, 2.0, 2.0 Fast and 2.0 Mini, Kling O3 and 3.0, Veo 3.1 Lite, Standard and Fast, MiniMax H3 and H3 Max (Hailuo 3.0), Gemini Omni Flash, Grok Imagine and Grok Imagine 1.5, HappyHorse 1.0, FLUX 3 and Wan 3.0. It also makes images (Nano Banana Pro, 2.1, 2, 2 Lite and Nano Banana, GPT Image 2.5 Flare, 2.5 Sunburst and 2.0, Seedream 5.0 Pro, 5.0 Lite, 4.5 and 4.0, Qwen Image), music, speech and upscaling. PixVerse's own developer API sells only the PixVerse models, and its credits are kept apart from PixVerse subscriptions.
+The API makes native PixVerse V6, V5.6, V5.5, V5, V5 Fast and C1 video (sound, multi-shot, more than 900 effect templates, Off-Peak mode) plus the models PixVerse hosts: Seedance 2.5, 2.0, 2.0 Fast and 2.0 Mini, Kling 4.0, O3 and 3.0, Veo 3.1 Lite, Standard and Fast, MiniMax H3 and H3 Max (Hailuo 3.0), Gemini Omni Flash, Grok Imagine and Grok Imagine 1.5, HappyHorse 1.0, FLUX 3 and Wan 3.0. It also makes images (Nano Banana Pro, 2.1, 2, 2 Lite and Nano Banana, GPT Image 2.5 Flare, 2.5 Sunburst and 2.0, Seedream 5.0 Pro, 5.0 Lite, 4.5 and 4.0, Qwen Image), music, speech and upscaling. PixVerse's own developer API sells only the PixVerse models, and its credits are kept apart from PixVerse subscriptions.
 
 Each example reads a list of prompts from `prompts.json`, submits them through the useapi.net PixVerse API, polls each task until it is final, and downloads every finished MP4 — so you can queue a batch and come back to the winners.
 
 | Example | What it does | Tutorial |
 |---|---|---|
-| [`video/`](./video) | Batch-generate PixVerse V6, V5.x and C1 video, text-to-video and image-to-video, with sound, multi-shot, and any hosted model (Seedance 2.5 and 2.0, Kling O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine, HappyHorse 1.0) selectable per prompt | [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
+| [`video/`](./video) | Batch-generate PixVerse V6, V5.x and C1 video, text-to-video and image-to-video, with sound, multi-shot, and any hosted model (Seedance 2.5 and 2.0, Kling 4.0, O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine, HappyHorse 1.0) selectable per prompt | [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
 
 ## Quick start
 
@@ -40,7 +40,7 @@ Through useapi.net, no PixVerse developer key: you use a useapi.net [API token](
 
 ### Can the PixVerse API run Seedance 2.0 and Veo 3.1?
 
-Through useapi.net, yes, from the same call as PixVerse V6: [POST videos/create](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) runs 17 third-party video models, among them Seedance 2.5 and 2.0, Kling O3, Veo 3.1 and MiniMax H3. On Premium billed yearly, a 5-second 1080p video costs $1.44 on Seedance 2.0 and $2.72 on Seedance 2.5, against $1.87 and $2.84 on ByteDance's official API (as of October 2026).
+Through useapi.net, yes, from the same call as PixVerse V6: [POST videos/create](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) runs 18 third-party video models, among them Seedance 2.5 and 2.0, Kling 4.0 and O3, Veo 3.1 and MiniMax H3. On Premium billed yearly, a 5-second 1080p video costs $1.44 on Seedance 2.0 and $2.72 on Seedance 2.5, against $1.87 and $2.84 on ByteDance's official API (as of October 2026).
 
 ### How many PixVerse accounts can I connect?
 

@@ -1,6 +1,6 @@
 # PixVerse V6 video — PixVerse API batch generation (Node.js)
 
-Batch-generate [PixVerse](https://pixverse.ai) V6 video (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts, such as Seedance 2.5 and 2.0, Kling O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine 1.5 and HappyHorse 1.0) on your [PixVerse subscription](https://app.pixverse.ai/subscribe) through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
+Batch-generate [PixVerse](https://pixverse.ai) V6 video (and `v5.6`, `v5.5`, `v5`, `v5-fast`, `pixverse-c1`, plus the third-party models PixVerse hosts, such as Seedance 2.5 and 2.0, Kling 4.0, O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine 1.5 and HappyHorse 1.0) on your [PixVerse subscription](https://app.pixverse.ai/subscribe) through the [PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
 Full walkthrough: [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
 
