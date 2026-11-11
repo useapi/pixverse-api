@@ -1,0 +1,31 @@
+[
+    {
+        "name": "performance-9x16",
+        "song": "my-song.mp3",
+        "character": "my-singer.jpg",
+        "mode": "performance",
+        "style": "auto",
+        "music_genre": "hip_hop",
+        "subtitles": true,
+        "aspect_ratio": "9:16",
+        "quality": "720p"
+    },
+    {
+        "name": "expressive-own-style-16x9",
+        "song": "my-song.mp3",
+        "character": "my-singer.jpg",
+        "mode": "expressive",
+        "style": "custom",
+        "aspect_ratio": "16:9",
+        "quality": "1080p"
+    },
+    {
+        "name": "library-song-and-character",
+        "song": "asset/music/material/audio/street_level.mp3",
+        "character": "asset/music/material/character/mvmv1.png",
+        "mode": "performance",
+        "style": "lo_fi",
+        "aspect_ratio": "1:1",
+        "quality": "720p"
+    }
+]

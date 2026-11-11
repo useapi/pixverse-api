@@ -1,14 +1,15 @@
-# PixVerse API examples: PixVerse V6, Seedance 2.5, Veo 3.1 (useapi.net)
+# PixVerse API examples: PixVerse V6, Seedance 2.5, Veo 3.1, music videos (useapi.net)
 
 Runnable Node.js examples for the [PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) by [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api), a third-party REST API for [PixVerse](https://pixverse.ai) by AIsphere. It uses your [PixVerse subscription](https://app.pixverse.ai/subscribe): Free (Basic), Standard $10, Pro $30, Premium $60, Ultra $199 or Team Ultra $199 a seat a month (as of October 2026).
 
-The API makes native PixVerse V6, V5.6, V5.5, V5, V5 Fast and C1 video (sound, multi-shot, more than 900 effect templates, Off-Peak mode) plus the models PixVerse hosts: Seedance 2.5, 2.0, 2.0 Fast and 2.0 Mini, Kling 4.0, O3 and 3.0, Veo 3.1 Lite, Standard and Fast, MiniMax H3 and H3 Max (Hailuo 3.0), Gemini Omni Flash, Grok Imagine and Grok Imagine 1.5, HappyHorse 1.0, FLUX 3 and Wan 3.0. It also makes images (Nano Banana Pro, 2.1, 2, 2 Lite and Nano Banana, GPT Image 2.5 Flare, 2.5 Sunburst and 2.0, Seedream 5.0 Pro, 5.0 Lite, 4.5 and 4.0, Qwen Image), music, speech and upscaling. PixVerse's own developer API sells only the PixVerse models, and its credits are kept apart from PixVerse subscriptions.
+The API makes native PixVerse V6, V5.6, V5.5, V5, V5 Fast and C1 video (sound, multi-shot, more than 900 effect templates, Off-Peak mode) plus the models PixVerse hosts: Seedance 2.5, 2.0, 2.0 Fast and 2.0 Mini, Kling 4.0, O3 and 3.0, Veo 3.1 Lite, Standard and Fast, MiniMax H3 and H3 Max (Hailuo 3.0), Gemini Omni Flash, Grok Imagine and Grok Imagine 1.5, HappyHorse 1.0, FLUX 3 and Wan 3.0. It also turns a song into a lip-synced music video (PixVerse's One-Click MV), and makes images (Nano Banana Pro, 2.1, 2, 2 Lite and Nano Banana, GPT Image 2.5 Flare, 2.5 Sunburst and 2.0, Seedream 5.0 Pro, 5.0 Lite, 4.5 and 4.0, Qwen Image), music, speech and upscaling. PixVerse's own developer API sells only the PixVerse models, and its credits are kept apart from PixVerse subscriptions.
 
-Each example reads a list of prompts from `prompts.json`, submits them through the useapi.net PixVerse API, polls each task until it is final, and downloads every finished MP4 — so you can queue a batch and come back to the winners.
+Each example reads a list of jobs from a JSON file (`prompts.json`, `music-videos.json`), submits them through the useapi.net PixVerse API, polls each task until it is final, and downloads every finished MP4, so you can queue a batch and come back to the winners.
 
 | Example | What it does | Tutorial |
 |---|---|---|
 | [`video/`](./video) | Batch-generate PixVerse V6, V5.x and C1 video, text-to-video and image-to-video, with sound, multi-shot, and any hosted model (Seedance 2.5 and 2.0, Kling 4.0, O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine, HappyHorse 1.0) selectable per prompt | [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
+| [`music-video/`](./music-video) | Turn a song and a character photo into a finished, lip-synced music video (PixVerse's One-Click MV): performance, expressive or storytelling, 720p or 1080p, with a free price quote first and every extra file downloaded | [How to Make an AI Music Video from a Song with the PixVerse API](https://useapi.net/docs/articles/pixverse-music-video-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
 
 ## Quick start
 
@@ -50,6 +51,7 @@ More answers: [PixVerse API questions](https://useapi.net/docs/api-pixverse-v2?u
 
 ## Tutorials
 
+- [How to Make an AI Music Video from a Song with the PixVerse API](https://useapi.net/docs/articles/pixverse-music-video-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api): a full song and a character photo to a 1080p lip-synced music video, with the song made on Flow Music and the dancer on Nano Banana 2.1, pricing, and the runnable `music-video/` script
 - [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api): the two-call video workflow with copy-paste `curl`, the native and third-party model lineup, sound, multi-shot, more than 900 effect templates, pricing, and the runnable batch script
 - [Seedance 2.0 and 2.5 API Pricing: Every Route, Compared](https://useapi.net/docs/articles/seedance-2-api-pricing?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
 - [Sora 2 API Alternatives Compared, With Code: Seedance 2.5, Omni Flash, MiniMax H3, Kling v3](https://useapi.net/docs/articles/sora-2-api-alternatives?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
