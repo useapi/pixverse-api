@@ -38,7 +38,7 @@ node music-video.mjs user:1234-abcdefhijklmnopqrstuv my@email.com
 Changelog:
 ==========
 
-- November 11, 2026: Initial release.
+- November 11, 2026: Initial release. Extra files are always saved inside their job folder.
 
 */
 
@@ -160,11 +160,15 @@ async function main() {
                 continue;
             }
 
-            const dir = path.join(OUTPUT_DIR, name);
+            const dir = path.join(OUTPUT_DIR, path.basename(name));
             await fs.mkdir(dir, { recursive: true });
-            await download(mv.video.url, path.join(dir, `${name}.mp4`));
-            for (const f of mv.files ?? [])
-                if (f.url) await download(f.url, path.join(dir, f.file_name));
+            await download(mv.video.url, path.join(dir, `${path.basename(name)}.mp4`));
+            for (const f of mv.files ?? []) {
+                // keep every extra file inside its job folder, whatever name the API returns
+                const fileName = path.basename(String(f.file_name ?? ''));
+                if (!f.url || !/^https:\/\//.test(f.url) || !fileName || fileName === '.' || fileName === '..') continue;
+                await download(f.url, path.join(dir, fileName));
+            }
             await log(`${name}: done in ${Math.round((Date.now() - started) / 1000)} s, ${mv.video.width}x${mv.video.height}, ${mv.video.duration} s, saved to ${dir} with ${mv.files?.length ?? 0} extra files`);
         } catch (error) {
             await log(`${name}: ${error.message}`);
