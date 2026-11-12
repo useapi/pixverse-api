@@ -4,6 +4,8 @@ Turn a song and a character photo into a finished, lip-synced music video (PixVe
 
 Full walkthrough: [How to Make an AI Music Video from a Song with the PixVerse API](https://useapi.net/docs/articles/pixverse-music-video-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)
 
+Watch a 2½-minute 1080p result on YouTube: [AI music video from one song and one photo](https://youtu.be/VDKYSzk3JQI)
+
 For each job in `music-videos.json`, `music-video.mjs` uploads the song and photos via [`POST /files`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-files?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api), asks [`POST /music-video/create`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-music-video-create?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) for a free price quote, creates the music video, polls [`GET /music-video/{video_id}`](https://useapi.net/docs/api-pixverse-v2/get-pixverse-music-video-video_id?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) until it is done, and downloads the MP4 with its extra files: the same video without captions, the `.ass` subtitle file, and the key images and clips PixVerse cut together.
 
 ## Prerequisites
