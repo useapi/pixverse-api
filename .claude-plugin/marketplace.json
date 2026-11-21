@@ -1,0 +1,24 @@
+{
+  "name": "useapi-pixverse",
+  "description": "useapi.net PixVerse plugin for Claude Code: the hosted MCP server.",
+  "owner": {
+    "name": "useapi.net",
+    "url": "https://useapi.net"
+  },
+  "plugins": [
+    {
+      "name": "pixverse",
+      "source": "./",
+      "description": "Hosted PixVerse MCP server by useapi.net (38 tools): make video from text, images, effect templates and keyframes, extend, lip-sync and upscale it, and generate images, music, music videos and speech, on your own PixVerse accounts. Third-party paid service, not affiliated with PixVerse.",
+      "category": "media",
+      "tags": [
+        "pixverse",
+        "video",
+        "image",
+        "music",
+        "lip-sync",
+        "mcp"
+      ]
+    }
+  ]
+}

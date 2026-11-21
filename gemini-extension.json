@@ -1,0 +1,22 @@
+{
+  "name": "useapi-pixverse",
+  "version": "1.0.0",
+  "description": "Hosted PixVerse MCP server by useapi.net (38 tools): make video from text, images, effect templates and keyframes, extend, lip-sync and upscale it, and generate images, music, music videos and speech, on your own PixVerse accounts. Third-party paid service, not affiliated with PixVerse.",
+  "contextFileName": "GEMINI.md",
+  "settings": [
+    {
+      "name": "useapi.net API token",
+      "description": "Your useapi.net API token, from https://useapi.net/docs/start-here/setup-useapi",
+      "envVar": "USEAPI_TOKEN",
+      "sensitive": true
+    }
+  ],
+  "mcpServers": {
+    "useapi-pixverse": {
+      "httpUrl": "https://api.useapi.net/v2/pixverse/mcp",
+      "headers": {
+        "Authorization": "Bearer ${USEAPI_TOKEN}"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "pixverse",
+  "displayName": "PixVerse (useapi.net)",
+  "description": "Hosted PixVerse MCP server by useapi.net (38 tools): make video from text, images, effect templates and keyframes, extend, lip-sync and upscale it, and generate images, music, music videos and speech, on your own PixVerse accounts. Third-party paid service, not affiliated with PixVerse.",
+  "author": {
+    "name": "useapi.net",
+    "url": "https://useapi.net"
+  },
+  "homepage": "https://useapi.net/docs/api-pixverse-v2/mcp",
+  "repository": "https://github.com/useapi/pixverse-api",
+  "license": "MIT",
+  "keywords": [
+    "pixverse",
+    "video",
+    "image",
+    "music",
+    "lip-sync",
+    "mcp",
+    "useapi"
+  ],
+  "mcpServers": {
+    "useapi-pixverse": {
+      "type": "http",
+      "url": "https://api.useapi.net/v2/pixverse/mcp",
+      "headers": {
+        "Authorization": "Bearer ${USEAPI_TOKEN}"
+      }
+    }
+  }
+}
