@@ -23,6 +23,23 @@ node ./pixverse.mjs <API_TOKEN> <EMAIL>
 
 `API_TOKEN` is your useapi.net token and `EMAIL` is your connected PixVerse account email — every script looks the account up by email automatically. Edit `prompts.json` in each folder to queue your own prompts. The PixVerse API is served under the `/v2/pixverse/...` base path; every supported parameter is documented on the [POST /videos/create](https://useapi.net/docs/api-pixverse-v2/post-pixverse-videos-create-v4?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) endpoint page.
 
+## MCP server
+
+useapi.net also runs a hosted [Model Context Protocol](https://modelcontextprotocol.io) server for PixVerse, so an AI assistant such as the Claude app, ChatGPT, Claude Code, Cursor or VS Code Copilot can use it on your PixVerse accounts. It has 38 tools: videos from text, an image, more than 900 effect templates, first and last frames, keyframes or reference images, with PixVerse's own models and third-party ones such as Seedance 2.5; extend, modify, lip-sync, motion control and upscale; images and image upscale; songs, music videos and speech; uploads, your PixVerse history and running jobs. Free price quotes (`quote: true`) for upscales and music videos. Nothing to install or run locally.
+
+- Endpoint: `https://api.useapi.net/v2/pixverse/mcp`
+- Transport: Streamable HTTP
+- Authorization: your useapi.net API token in the `Authorization: Bearer …` header, and an account connected with the [PixVerse setup](https://useapi.net/docs/start-here/setup-pixverse?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api). The Claude app and ChatGPT sign in with OAuth instead.
+- Listed in the official MCP Registry as `net.useapi/pixverse`
+
+Claude Code:
+
+```bash
+claude mcp add --transport http useapi-pixverse https://api.useapi.net/v2/pixverse/mcp --header "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+Cursor, VS Code, Windsurf, the Claude app, ChatGPT and the full tool list: [PixVerse MCP server docs](https://useapi.net/docs/api-pixverse-v2/mcp?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api). useapi.net is a third-party API, not affiliated with PixVerse.
+
 ## Common questions
 
 <!-- Mirrors the Questions block on useapi.net/docs/api-pixverse-v2 (2026-10-21, prices re-read 2026-11-15: PixVerse's price page, the subscribe page and BytePlus model pricing in a browser, all unchanged; PixVerse Ultra is now $199 / 30,000 credits, and Ultra takes 50% off Seedance 2.0 and 45% off 2.5 by default through useapi.net (unless the request sends relax_mode false, measured live 2026-11-15), so 5 s at 1080p on Ultra billed yearly ($1,788 / 12 / 30,000 = $0.0049667 a credit) is 225 credits = $1.12 and 468 credits = $2.32). Official: https://docs.platform.pixverse.ai/pixverse-api-pricing-2394995m0.md (225 credits = USD 1, V6 1080p with sound 23 credits/s = $0.102/s, no Off-Peak rate, read 2026-10-21), https://docs.platform.pixverse.ai/billing-and-usage-2394984m0.md (API credits kept separate from subscriptions), API access "Starting from $100" (Enterprise card on https://app.pixverse.ai/subscribe, read 2026-10-21). Ours: the overview calculator (V6 1080p with sound 20 credits/s; Premium $60 / 15,000 credits = $0.08/s, yearly $0.064/s, Off-Peak $0.04/s). Seedance 2.0 / 2.5 1080p 5 s on Premium yearly = $1.44 / $2.72 against BytePlus $1.87 / $2.84 (docs/articles/seedance-2-api-pricing.md). Free Basic: PixVerse models up to 540p, third-party video needs Pro or higher. The useapi.net subscription is not part of the per-video math. -->
