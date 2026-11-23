@@ -25,6 +25,8 @@ node ./pixverse.mjs <API_TOKEN> <EMAIL>
 
 ## MCP server
 
+[![PixVerse MCP connector](https://glama.ai/mcp/connectors/net.useapi/pixverse/badges/score.svg)](https://glama.ai/mcp/connectors/net.useapi/pixverse)
+
 useapi.net also runs a hosted [Model Context Protocol](https://modelcontextprotocol.io) server for PixVerse, so an AI assistant such as the Claude app, ChatGPT, Claude Code, Cursor or VS Code Copilot can use it on your PixVerse accounts. It has 38 tools: videos from text, an image, more than 900 effect templates, first and last frames, keyframes or reference images, with PixVerse's own models and third-party ones such as Seedance 2.5; extend, modify, lip-sync, motion control and upscale; images and image upscale; songs, music videos and speech; uploads, your PixVerse history and running jobs. Free price quotes (`quote: true`) for upscales and music videos. Nothing to install or run locally.
 
 - Endpoint: `https://api.useapi.net/v2/pixverse/mcp`
