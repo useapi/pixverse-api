@@ -10,6 +10,7 @@ Each example reads a list of jobs from a JSON file (`prompts.json`, `music-video
 |---|---|---|
 | [`video/`](./video) | Batch-generate PixVerse V6, V5.x and C1 video, text-to-video and image-to-video, with sound, multi-shot, and any hosted model (Seedance 2.5 and 2.0, Kling 4.0, O3 and 3.0, Veo 3.1, MiniMax H3, Grok Imagine, HappyHorse 1.0) selectable per prompt | [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
 | [`music-video/`](./music-video) | Turn a song and a character photo into a finished, lip-synced music video (PixVerse's One-Click MV): performance, expressive or storytelling, 720p or 1080p, with a free price quote first and every extra file downloaded | [How to Make an AI Music Video from a Song with the PixVerse API](https://useapi.net/docs/articles/pixverse-music-video-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
+| [`gpt-image-2-6-gif/`](./gpt-image-2-6-gif) | Make looping animated GIFs from a text prompt with GPT Image 2.6 Flare and Sunburst: size, 2 to 16 frames, frame speed and detail level per prompt, free on PixVerse Ultra | [How to Generate Animated GIFs with the GPT Image 2.6 API](https://useapi.net/docs/articles/gpt-image-2-6-gif-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) |
 
 ## Quick start
 
@@ -97,6 +98,7 @@ More answers: [PixVerse API questions](https://useapi.net/docs/api-pixverse-v2?u
 
 ## Tutorials
 
+- [How to Generate Animated GIFs with the GPT Image 2.6 API](https://useapi.net/docs/articles/gpt-image-2-6-gif-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api): looping GPT Image 2.6 GIFs from a prompt, transparent PNG stickers, credit prices per detail level, and the runnable `gpt-image-2-6-gif/` script
 - [How to Make an AI Music Video from a Song with the PixVerse API](https://useapi.net/docs/articles/pixverse-music-video-api?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api): a full song and a character photo to a 1080p lip-synced music video, with the song made on Flow Music and the dancer on Nano Banana 2.1, pricing, and the runnable `music-video/` script
 - [How to Generate AI Video with PixVerse V6 via the PixVerse API](https://useapi.net/docs/articles/pixverse-demo?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api): the two-call video workflow with copy-paste `curl`, the native and third-party model lineup, sound, multi-shot, more than 900 effect templates, pricing, and the runnable batch script
 - [Seedance 2.0 and 2.5 API Pricing: Every Route, Compared](https://useapi.net/docs/articles/seedance-2-api-pricing?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api)

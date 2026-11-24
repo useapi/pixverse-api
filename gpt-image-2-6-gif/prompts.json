@@ -1,0 +1,29 @@
+[
+    {
+        "name": "christmas-disco-dancer",
+        "prompt": "Looping animation. A pretty, stylish young woman with an eye-catching, one-of-a-kind look: a tall, glossy retro pompadour of pastel mint hair fading to silver tips, tiny gold hoop earrings, a dusting of freckles, rosy cheeks and a confident, playful smile. She wears normal-size retro cat-eye novelty glasses with glossy red frames; instead of see-through lenses, each lens shows a big printed cartoon eye with long lashes, and the cartoon pupils glance left and right and blink in a smooth loop. Her outfit is a fitted red velvet Christmas coat with fluffy white fur trim and a wide black belt with a big gold buckle encrusted with sapphires that sparkle and glow as she moves. She dances smoothly and gently: a soft shoulder shimmy, a slight side-to-side sway, and her hands rolling in small circles close to her body, all small, flowing movements. Behind her, on a vibrant blue background, Christmas ornaments, candy canes, wrapped gifts and snowflakes float and drift across the screen in bouncy rows, like the floating graphics of a 1990s dance-pop music video. Playful retro studio-portrait style, bright saturated colors, smooth seamless loop.",
+        "model": "gpt-image-2.6-sunburst",
+        "gif_frame_size": "576x1024",
+        "frame_count": 12,
+        "frame_duration_ms": 130,
+        "detail_level": "high"
+    },
+    {
+        "name": "campfire-fox",
+        "prompt": "Looping pixel-art animation of a cozy campfire at night under a starry sky, flames flickering, sparks rising, a fox sleeping beside it",
+        "model": "gpt-image-2.6-sunburst",
+        "gif_frame_size": "768x432",
+        "frame_count": 16,
+        "frame_duration_ms": 80,
+        "detail_level": "medium"
+    },
+    {
+        "name": "ginger-cat",
+        "prompt": "Looping animation of a ginger cat on a sunny windowsill, slowly blinking and flicking its tail, watercolor style",
+        "model": "gpt-image-2.6-flare",
+        "gif_frame_size": "432x768",
+        "frame_count": 9,
+        "frame_duration_ms": 150,
+        "detail_level": "low"
+    }
+]

@@ -8,6 +8,7 @@ node_modules
 *.jpeg
 *.png
 *.webp
+*.gif
 
 # Run logs / scratch
 *_results.txt
