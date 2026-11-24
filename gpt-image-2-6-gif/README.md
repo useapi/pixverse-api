@@ -8,6 +8,8 @@ Full walkthrough: [How to Generate Animated GIFs with the GPT Image 2.6 API](htt
 
 `gpt-image-2.6-sunburst`, `576x1024`, 12 frames at 130 ms, `detail_level: high`, made from the first prompt in `prompts.json`.
 
+See it run: [the GIFs in a 40-second YouTube Short](https://youtube.com/shorts/kEW-_EqlZZ8): the dancer, the pixel-art campfire and the paper boat made on Ultra for 0 credits, each with its prompt on screen.
+
 For each job in `prompts.json`, `gif.mjs` sends [`POST /images/create`](https://useapi.net/docs/api-pixverse-v2/post-pixverse-images-create?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) with `output_format: "gif"`, polls [`GET /images/{image_id}`](https://useapi.net/docs/api-pixverse-v2/get-pixverse-images-image_id?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) every 5 seconds until `image_status_final` is `true`, and downloads the GIF to `output/<name>.gif`.
 
 ## Prerequisites
