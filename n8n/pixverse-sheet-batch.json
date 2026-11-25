@@ -1,0 +1,1534 @@
+{
+  "id": "pixverseSheetBatch01",
+  "name": "Seedance 2.5 videos on your PixVerse plan, from a Google Sheet",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Add prompts to the PixVerse queue",
+        "formDescription": "One prompt per line. To animate an image, add | and the image link after the prompt. The next tick, within 3 minutes, starts them on your PixVerse accounts.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Prompts",
+              "fieldType": "textarea",
+              "requiredField": true,
+              "placeholder": "A paper boat drifts down a rainy street at dusk\nThe boat sails into the sunset | https://example.com/boat.jpg"
+            },
+            {
+              "fieldLabel": "Model",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "defaultValue": "seedance-2.5",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "seedance-2.5"
+                  },
+                  {
+                    "option": "v6"
+                  },
+                  {
+                    "option": "seedance-2.5-flash"
+                  },
+                  {
+                    "option": "kling-4.0"
+                  },
+                  {
+                    "option": "veo-3.1-fast"
+                  },
+                  {
+                    "option": "veo-3.1-lite"
+                  },
+                  {
+                    "option": "veo-3.1-standard"
+                  },
+                  {
+                    "option": "minimax-h3"
+                  },
+                  {
+                    "option": "minimax-h3-max"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Quality",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "defaultValue": "720p",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "720p"
+                  },
+                  {
+                    "option": "480p"
+                  },
+                  {
+                    "option": "768p"
+                  },
+                  {
+                    "option": "1080p"
+                  },
+                  {
+                    "option": "1440p"
+                  },
+                  {
+                    "option": "2160p"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Duration (seconds)",
+              "fieldType": "number",
+              "requiredField": true,
+              "defaultValue": 6,
+              "placeholder": "Seedance 2.5: 4 to 30. Veo 3.1: 4, 6 or 8"
+            },
+            {
+              "fieldLabel": "Aspect ratio (text-to-video)",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "defaultValue": "16:9",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "16:9"
+                  },
+                  {
+                    "option": "9:16"
+                  },
+                  {
+                    "option": "1:1"
+                  },
+                  {
+                    "option": "4:3"
+                  },
+                  {
+                    "option": "3:4"
+                  },
+                  {
+                    "option": "21:9"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "PixVerse account (optional)",
+              "fieldType": "email",
+              "placeholder": "Leave empty: each video goes to any account with a free job slot"
+            }
+          ]
+        },
+        "authentication": "basicAuth",
+        "options": {
+          "path": "pixverse-queue",
+          "appendAttribution": false,
+          "buttonLabel": "Add to the queue"
+        }
+      },
+      "name": "Add to the PixVerse queue",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "formBasicAuth",
+          "name": "Form login"
+        }
+      },
+      "webhookId": "582a2bcf-a571-5eeb-86c6-625f4d2643ba"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 3
+            }
+          ]
+        }
+      },
+      "name": "Every 3 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// ---- Settings you can edit --------------------------------------------------------------------------------\nconst settings = {\n  sheetId: '',                // the Google Sheet id: the long part of its URL between /d/ and /edit\n  sheetName: 'PixVerse queue',// the tab with the columns listed in the workflow's main note\n  model: 'seedance-2.5',      // used when a row leaves model empty. Allowed: see the MODELS list in Plan the tick\n  quality: '720p',            // used when a row leaves quality empty (if the model has no 720p, its first quality is used)\n  duration: 6,                // seconds, used when a row leaves duration empty. 6 fits all eight models\n  aspectRatio: '16:9',        // text-to-video only (image-to-video keeps the image's shape)\n  maxStartsPerTick: 10,       // at most this many new jobs per tick, and never more than your accounts' free job slots\n  maxPollsPerTick: 30,        // at most this many running rows read per tick\n  giveUpAfterMinutes: 90,     // a row still not ready after this long is marked \"check job\"\n  saveToDrive: true,          // true = copy each finished video to Google Drive (folder below)\n  driveFolderId: '',          // empty = the root of My Drive\n};\n// -----------------------------------------------------------------------------------------------------------\nlet fromForm = false;\ntry { fromForm = $('Add to the PixVerse queue').isExecuted; } catch (e) { fromForm = false; }\nif (!settings.sheetId) throw new Error('Set sheetId in the Settings node: the id of your Google Sheet.');\nreturn [{ json: { ...settings, fromForm } }];\n"
+      },
+      "name": "Settings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "40c472b1-195a-5bcf-93cf-2546388d14ac",
+              "leftValue": "={{ $json.fromForm }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "From the form?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// One row per line: \"prompt | image link\". The queue checks each row when it starts it.\nconst f = $('Add to the PixVerse queue').first().json;\nconst pin = String(f['PixVerse account (optional)'] || '').trim();\nconst rows = String(f['Prompts'] || '').split(/\\r?\\n/).map(l => l.trim()).filter(Boolean).slice(0, 200).map(line => {\n  const [prompt, image] = line.split('|').map(s => s.trim());\n  return { json: { prompt: prompt || '', image_url: image || '', model: f['Model'] || '', quality: f['Quality'] || '',\n    duration: String(f['Duration (seconds)'] || ''), aspect_ratio: image ? '' : (f['Aspect ratio (text-to-video)'] || ''),\n    email: pin, status: 'new', note: `added from the form ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC` } };\n});\nif (!rows.length) throw new Error('No prompts in the form.');\nreturn rows;\n"
+      },
+      "name": "Form rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Settings').first().json.sheetId }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Settings').first().json.sheetName }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "quality",
+              "displayName": "quality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "account",
+              "displayName": "account",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "started",
+              "displayName": "started",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "finished",
+              "displayName": "finished",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_url",
+              "displayName": "video_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_link",
+              "displayName": "drive_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Append rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1100,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "googleSheetsCred",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "text",
+        "completionTitle": "Added to the queue",
+        "completionMessage": "Your prompts are in the sheet with status new. The next tick (every 3 minutes) starts them on your PixVerse accounts: watch the status, account and video_url columns.",
+        "options": {}
+      },
+      "name": "Queued",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        1320,
+        0
+      ],
+      "webhookId": "494509a6-daf3-5d8e-9c20-40e15f30e2d8",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.useapi.net/v2/pixverse/accounts",
+        "options": {
+          "timeout": 60000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "name": "Accounts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        420
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "useapiHeaderAuth",
+          "name": "useapi.net API token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.useapi.net/v2/pixverse/scheduler/available",
+        "options": {
+          "timeout": 60000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "name": "Free slots",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        420
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "useapiHeaderAuth",
+          "name": "useapi.net API token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Settings').first().json.sheetId }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Settings').first().json.sheetName }}"
+        },
+        "options": {}
+      },
+      "name": "Read rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1320,
+        420
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "googleSheetsCred",
+          "name": "Google Sheets account"
+        }
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst apiErr = j => {\n  if (!j || !j.error || j.video_id || j.video_status_name || j.result || j.available) return null;\n  const e = j.error;\n  const msg = typeof e === 'string' ? e : String(e.message || '');\n  let body = typeof e === 'string' ? j : null;\n  const m = msg.match(/^(\\d{3}) - ([\\s\\S]*)$/);\n  if (m) { try { body = JSON.parse(m[2]); if (typeof body === 'string') body = JSON.parse(body); } catch (x) { body = null; } }\n  // n8n keeps the answer's body in the message for most codes ('400 - \"{...}\"'), but swaps in its own text for some\n  // (429: \"Try spacing your requests out...\"): then only error.status carries the HTTP code.\n  const code = Number((body && body.code) || (m && m[1]) || (typeof e === 'object' && (e.status || e.httpCode)) || 0) || 0;\n  const plain = { 429: 'every PixVerse account is running at its job limit', 502: 'bad gateway', 504: 'timed out', 500: 'server error' };\n  const text = (body && typeof body.error === 'string' && body.error) || (!m && plain[code]) || (typeof e === 'object' && e.description) || msg || 'no answer';\n  return { code, text: String(text).slice(0, 500) };\n};\n// 429 = every account (or the pinned one) is at its job limit, or PixVerse's own concurrent limit: nothing was made.\nconst nothingMade = err => err.code === 429;\n// 596 = the account's PixVerse login failed: nothing was made. 422 = PixVerse moderation refused the prompt: nothing was made.\n// Any other 5xx, or no answer at all: the job may have started and used credits, so it is never sent again.\nconst mayBeMade = err => !err.code || (err.code >= 500 && err.code !== 596);\nconst SETUP = 'https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch';\nconst explain = (err, what) => {\n  if (err.code === 401) return `${what}: the useapi.net API token was refused. Open the \"useapi.net API token\" credential and check it: Name Authorization, Value Bearer followed by your token.`;\n  if (err.code === 402) return `${what}: ${err.text}. Check your useapi.net subscription.`;\n  if (err.code === 404) return `${what}: ${err.text}. The email column must be a PixVerse account connected at useapi.net (${SETUP}).`;\n  if (err.code === 412) return `${what}: ${err.text} Nothing was charged. Top up or upgrade the PixVerse plan, or pick another account, then set status to new.`;\n  if (err.code === 422) return `${what}: PixVerse moderation refused the prompt (${err.text}). Nothing was made. Change the prompt, then set status to new.`;\n  if (err.code === 400) return `${what}: ${err.text}. Fix the row, then set status to new.`;\n  if (err.code === 596) return `${what}: the PixVerse login of that account failed (${err.text}). Nothing was made. Reconnect the account at useapi.net (${SETUP}), then set status to new.`;\n  if (!err.code) return `${what}: no answer from useapi.net (${err.text}).`;\n  return `${what}: ${err.text} (HTTP ${err.code})`;\n};\nconst stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';\n\n// What each row needs this tick, from its status column:\n//   new / (empty) -> start a job (no email: the API picks an account with a free job slot, an email pins it);\n//                    a row with image_url first uploads the image to PixVerse\n//   rendering     -> read the video\n//   done, error, check job, anything else -> waits for you (set it back to new to run it again)\nconst S = $('Settings').first().json;\nconst accts = $('Accounts').first().json;\nconst free = $('Free slots').first().json;\nconst ae = apiErr(accts);\nif (ae) throw new Error(explain(ae, 'The PixVerse accounts could not be read'));\nconst emails = Object.keys(accts || {}).filter(k => accts[k] && typeof accts[k] === 'object' && accts[k].email);\nif (!emails.length) throw new Error(`No PixVerse account is connected at useapi.net yet: see ${SETUP}`);\n// Free job slots per account (each account runs at most its maxJobs at once). If the read failed, 429s decide.\nconst slots = {};\nlet freeTotal = Infinity;\nif (!apiErr(free) && Array.isArray(free.available)) {\n  freeTotal = 0;\n  for (const a of free.available) { slots[a.email] = Math.max(0, Number(a.available) || 0); freeTotal += slots[a.email]; }\n}\nconst R169 = ['16:9', '4:3', '1:1', '3:4', '9:16', '21:9'];\nconst MODELS = {  // qualities, durations and ratios from the useapi.net docs (model-capabilities), November 2026\n  'v6':                 { q: ['360p', '540p', '720p', '1080p'], min: 1, max: 15, ratios: ['16:9', '9:16', '1:1', '4:3', '3:4'], len: 5000 },\n  'seedance-2.5':       { q: ['480p', '720p', '1080p', '2160p'], min: 4, max: 30, ratios: R169, len: 15000 },\n  'seedance-2.5-flash': { q: ['480p', '720p'], min: 4, max: 30, ratios: R169, len: 15000 },\n  'kling-4.0':          { q: ['720p', '1080p'], min: 3, max: 30, ratios: ['16:9', '9:16', '1:1', '21:9'], len: 2500 },\n  'veo-3.1-fast':       { q: ['720p', '1080p', '2160p'], set: [4, 6, 8], ratios: ['16:9', '9:16'], len: 3500, hd8: true },\n  'veo-3.1-lite':       { q: ['720p', '1080p'], set: [4, 6, 8], ratios: ['16:9', '9:16'], len: 3500, hd8: true },\n  'veo-3.1-standard':   { q: ['720p', '1080p', '2160p'], set: [4, 6, 8], ratios: ['16:9', '9:16'], len: 3500, hd8: true },\n  'minimax-h3':         { q: ['768p', '1440p'], min: 5, max: 15, ratios: R169, len: 7000 },\n  'minimax-h3-max':     { q: ['480p', '768p', '1080p'], min: 5, max: 15, ratios: R169, len: 7000 },\n};\nconst raw = v => String(v == null ? '' : v).trim();\nconst rows = $('Read rows').all().map(i => i.json).filter(r => r && r.row_number);\nconst out = [];\nlet starts = 0, polls = 0;\nfor (const r of rows) {\n  const st = raw(r.status).toLowerCase();\n  const fix = (note, status) => out.push({ json: { route: 'row', update: { row_number: r.row_number, status: status || 'error', note } } });\n  if (st === 'rendering') {\n    const id = raw(r.video_id);\n    if (!id) { fix('status is rendering but video_id is empty. Set status to new to start it again.', 'check job'); continue; }\n    if (polls >= S.maxPollsPerTick) continue;\n    polls += 1;\n    out.push({ json: { route: 'poll', row_number: r.row_number, video_id: id, started: raw(r.started),\n      url: 'https://api.useapi.net/v2/pixverse/videos/' + encodeURI(id) } });\n    continue;\n  }\n  if (st !== '' && st !== 'new') continue;\n  const prompt = raw(r.prompt), image = raw(r.image_url);\n  if (!prompt && !image) continue;  // an empty row\n  const model = raw(r.model) || S.model, m = MODELS[model];\n  const duration = Number(raw(r.duration) || S.duration);\n  const ratio = raw(r.aspect_ratio) || S.aspectRatio;\n  const pin = raw(r.email);\n  const bad = [];\n  let quality = raw(r.quality) || S.quality;\n  if (!m) bad.push(`model ${model} is not one this template knows: use ${Object.keys(MODELS).join(', ')}.`);\n  else {\n    if (!raw(r.quality) && !m.q.includes(quality)) quality = m.q[0];\n    if (!m.q.includes(quality)) bad.push(`quality ${quality} does not fit ${model}: ${m.q.join(', ')}.`);\n    if (m.set ? !m.set.includes(duration) : !(Number.isInteger(duration) && duration >= m.min && duration <= m.max))\n      bad.push(`duration ${raw(r.duration) || S.duration} does not fit ${model}: ${m.set ? m.set.join(', ') : `${m.min} to ${m.max}`} seconds.`);\n    if (m.hd8 && quality === '1080p' && duration !== 8) bad.push(`${model} at 1080p needs duration 8.`);\n    if (!image && !m.ratios.includes(ratio)) bad.push(`aspect_ratio ${ratio} does not fit ${model}: ${m.ratios.join(', ')}.`);\n    if (prompt.length > m.len) bad.push(`the prompt is ${prompt.length} characters, ${model} takes ${m.len}.`);\n  }\n  if (image && !/^https:\\/\\/\\S+$/.test(image)) bad.push(`${image.slice(0, 60)} is not an https link.`);\n  if (pin && !accts[pin]) bad.push(`email ${pin} is not a PixVerse account connected at useapi.net.`);\n  if (bad.length) { fix('Not started: ' + bad.join(' ')); continue; }\n  if (starts >= S.maxStartsPerTick || starts >= freeTotal) continue;  // the next tick takes it\n  if (pin && slots[pin] !== undefined) { if (slots[pin] <= 0) continue; slots[pin] -= 1; }\n  starts += 1;\n  const body = { model, duration, quality };\n  if (prompt) body.prompt = prompt;\n  if (!image) body.aspect_ratio = ratio;  // image-to-video takes its shape from the image\n  if (pin) body.email = pin;              // no email: the API spreads the jobs across your accounts\n  // Files uploaded to one PixVerse account work from every account, so the image goes to the pinned (or first) account.\n  out.push({ json: { route: image ? 'upload' : 'start', row_number: r.row_number, pin, body, image_url: image,\n    upload_email: pin || emails[0], url: 'https://api.useapi.net/v2/pixverse/videos/create' } });\n}\nreturn out.map((o, i) => ({ ...o, pairedItem: 0 }));\n"
+      },
+      "name": "Plan the tick",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 4,
+        "output": "={{ {\"start\": 0, \"upload\": 1, \"poll\": 2, \"row\": 3}[$json.route] ?? 3 }}"
+      },
+      "name": "Row step",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1760,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.image_url }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "name": "Download image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2300,
+        120
+      ],
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://api.useapi.net/v2/pixverse/files/?email=' + encodeURIComponent($('Plan the tick').itemMatching($itemIndex).json.upload_email) }}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "={{ $binary.data.mimeType }}"
+            }
+          ]
+        }
+      },
+      "name": "Upload image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2520,
+        120
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "useapiHeaderAuth",
+          "name": "useapi.net API token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst apiErr = j => {\n  if (!j || !j.error || j.video_id || j.video_status_name || j.result || j.available) return null;\n  const e = j.error;\n  const msg = typeof e === 'string' ? e : String(e.message || '');\n  let body = typeof e === 'string' ? j : null;\n  const m = msg.match(/^(\\d{3}) - ([\\s\\S]*)$/);\n  if (m) { try { body = JSON.parse(m[2]); if (typeof body === 'string') body = JSON.parse(body); } catch (x) { body = null; } }\n  // n8n keeps the answer's body in the message for most codes ('400 - \"{...}\"'), but swaps in its own text for some\n  // (429: \"Try spacing your requests out...\"): then only error.status carries the HTTP code.\n  const code = Number((body && body.code) || (m && m[1]) || (typeof e === 'object' && (e.status || e.httpCode)) || 0) || 0;\n  const plain = { 429: 'every PixVerse account is running at its job limit', 502: 'bad gateway', 504: 'timed out', 500: 'server error' };\n  const text = (body && typeof body.error === 'string' && body.error) || (!m && plain[code]) || (typeof e === 'object' && e.description) || msg || 'no answer';\n  return { code, text: String(text).slice(0, 500) };\n};\n// 429 = every account (or the pinned one) is at its job limit, or PixVerse's own concurrent limit: nothing was made.\nconst nothingMade = err => err.code === 429;\n// 596 = the account's PixVerse login failed: nothing was made. 422 = PixVerse moderation refused the prompt: nothing was made.\n// Any other 5xx, or no answer at all: the job may have started and used credits, so it is never sent again.\nconst mayBeMade = err => !err.code || (err.code >= 500 && err.code !== 596);\nconst SETUP = 'https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch';\nconst explain = (err, what) => {\n  if (err.code === 401) return `${what}: the useapi.net API token was refused. Open the \"useapi.net API token\" credential and check it: Name Authorization, Value Bearer followed by your token.`;\n  if (err.code === 402) return `${what}: ${err.text}. Check your useapi.net subscription.`;\n  if (err.code === 404) return `${what}: ${err.text}. The email column must be a PixVerse account connected at useapi.net (${SETUP}).`;\n  if (err.code === 412) return `${what}: ${err.text} Nothing was charged. Top up or upgrade the PixVerse plan, or pick another account, then set status to new.`;\n  if (err.code === 422) return `${what}: PixVerse moderation refused the prompt (${err.text}). Nothing was made. Change the prompt, then set status to new.`;\n  if (err.code === 400) return `${what}: ${err.text}. Fix the row, then set status to new.`;\n  if (err.code === 596) return `${what}: the PixVerse login of that account failed (${err.text}). Nothing was made. Reconnect the account at useapi.net (${SETUP}), then set status to new.`;\n  if (!err.code) return `${what}: no answer from useapi.net (${err.text}).`;\n  return `${what}: ${err.text} (HTTP ${err.code})`;\n};\nconst stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';\n\n// The uploaded image's path goes into the create request as first_frame_path. A failed download or upload made nothing\n// and cost nothing: the row gets an error note and nothing is sent.\nreturn $input.all().map((it, i) => {\n  const plan = $('Plan the tick').itemMatching(i).json;\n  const j = it.json;\n  const e = apiErr(j);\n  const file = j && Array.isArray(j.result) ? j.result[0] : null;\n  const path = file && (file.path || '');\n  if (!e && path) return { json: { route: 'start', row_number: plan.row_number, pin: plan.pin, url: plan.url,\n    body: { ...plan.body, first_frame_path: path } }, pairedItem: i };\n  const why = e ? explain(e, 'The image could not be uploaded') :\n    `The image could not be fetched or uploaded (${(j && j.error && (j.error.message || j.error)) || (file && file.err_msg) || 'no file path in the answer'}). Check that image_url is a public https link to a PNG, JPEG, GIF or WebP up to about 2K.`;\n  return { json: { route: 'row', update: { row_number: plan.row_number, status: 'error', note: String(why).slice(0, 500) } }, pairedItem: i };\n});\n"
+      },
+      "name": "Image ready",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2740,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4b787952-b9f9-5206-8516-2234d6ebbefa",
+              "leftValue": "={{ $json.route === 'start' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Image uploaded?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2960,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Both the text rows and the uploaded-image rows pass here, so the start answer can find its row.\nreturn $input.all().map((it, i) => ({ json: { row_number: it.json.row_number, pin: it.json.pin || '', body: it.json.body, url: it.json.url }, pairedItem: i }));\n"
+      },
+      "name": "Prepare start",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}"
+      },
+      "name": "Start video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2520,
+        640
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "useapiHeaderAuth",
+          "name": "useapi.net API token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst apiErr = j => {\n  if (!j || !j.error || j.video_id || j.video_status_name || j.result || j.available) return null;\n  const e = j.error;\n  const msg = typeof e === 'string' ? e : String(e.message || '');\n  let body = typeof e === 'string' ? j : null;\n  const m = msg.match(/^(\\d{3}) - ([\\s\\S]*)$/);\n  if (m) { try { body = JSON.parse(m[2]); if (typeof body === 'string') body = JSON.parse(body); } catch (x) { body = null; } }\n  // n8n keeps the answer's body in the message for most codes ('400 - \"{...}\"'), but swaps in its own text for some\n  // (429: \"Try spacing your requests out...\"): then only error.status carries the HTTP code.\n  const code = Number((body && body.code) || (m && m[1]) || (typeof e === 'object' && (e.status || e.httpCode)) || 0) || 0;\n  const plain = { 429: 'every PixVerse account is running at its job limit', 502: 'bad gateway', 504: 'timed out', 500: 'server error' };\n  const text = (body && typeof body.error === 'string' && body.error) || (!m && plain[code]) || (typeof e === 'object' && e.description) || msg || 'no answer';\n  return { code, text: String(text).slice(0, 500) };\n};\n// 429 = every account (or the pinned one) is at its job limit, or PixVerse's own concurrent limit: nothing was made.\nconst nothingMade = err => err.code === 429;\n// 596 = the account's PixVerse login failed: nothing was made. 422 = PixVerse moderation refused the prompt: nothing was made.\n// Any other 5xx, or no answer at all: the job may have started and used credits, so it is never sent again.\nconst mayBeMade = err => !err.code || (err.code >= 500 && err.code !== 596);\nconst SETUP = 'https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch';\nconst explain = (err, what) => {\n  if (err.code === 401) return `${what}: the useapi.net API token was refused. Open the \"useapi.net API token\" credential and check it: Name Authorization, Value Bearer followed by your token.`;\n  if (err.code === 402) return `${what}: ${err.text}. Check your useapi.net subscription.`;\n  if (err.code === 404) return `${what}: ${err.text}. The email column must be a PixVerse account connected at useapi.net (${SETUP}).`;\n  if (err.code === 412) return `${what}: ${err.text} Nothing was charged. Top up or upgrade the PixVerse plan, or pick another account, then set status to new.`;\n  if (err.code === 422) return `${what}: PixVerse moderation refused the prompt (${err.text}). Nothing was made. Change the prompt, then set status to new.`;\n  if (err.code === 400) return `${what}: ${err.text}. Fix the row, then set status to new.`;\n  if (err.code === 596) return `${what}: the PixVerse login of that account failed (${err.text}). Nothing was made. Reconnect the account at useapi.net (${SETUP}), then set status to new.`;\n  if (!err.code) return `${what}: no answer from useapi.net (${err.text}).`;\n  return `${what}: ${err.text} (HTTP ${err.code})`;\n};\nconst stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';\n\n// The video id goes into the row in this same tick, so the next tick (or a restart) reads the video instead of paying\n// twice. The id carries the account: user:<id>-pixverse:<email>-video:<number>.\nreturn $input.all().map((it, i) => {\n  const plan = $('Prepare start').itemMatching(i).json;\n  const j = it.json, u = { row_number: plan.row_number };\n  const id = j && j.video_id;\n  if (id) {\n    const m = String(id).match(/-pixverse:(.+)-video:/);\n    u.status = 'rendering'; u.video_id = String(id); u.started = stamp(); u.finished = '';\n    u.account = m ? m[1] : plan.pin; u.note = ''; u.video_url = ''; u.drive_link = '';\n    return { json: { update: u }, pairedItem: i };\n  }\n  const e = apiErr(j) || { code: 0, text: 'no video id in the answer' };\n  if (nothingMade(e)) u.note = `${stamp()}: ${plan.pin ? plan.pin + ' is' : 'every account is'} at its job limit. Nothing was made: sent again next tick.`;\n  else if (mayBeMade(e)) { u.status = 'check job'; u.note = `${e.code || 'no answer'}: ${e.text}. The job may have started and used credits, so it was not sent again. Look in PixVerse (or GET /videos at useapi.net) for a video with this prompt: if there is none, set status to new.`; }\n  else { u.status = 'error'; u.note = explain(e, 'Not started'); }\n  return { json: { update: u }, pairedItem: i };\n});\n"
+      },
+      "name": "Start result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2740,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 60000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "name": "Read video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3400,
+        900
+      ],
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "useapiHeaderAuth",
+          "name": "useapi.net API token"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst apiErr = j => {\n  if (!j || !j.error || j.video_id || j.video_status_name || j.result || j.available) return null;\n  const e = j.error;\n  const msg = typeof e === 'string' ? e : String(e.message || '');\n  let body = typeof e === 'string' ? j : null;\n  const m = msg.match(/^(\\d{3}) - ([\\s\\S]*)$/);\n  if (m) { try { body = JSON.parse(m[2]); if (typeof body === 'string') body = JSON.parse(body); } catch (x) { body = null; } }\n  // n8n keeps the answer's body in the message for most codes ('400 - \"{...}\"'), but swaps in its own text for some\n  // (429: \"Try spacing your requests out...\"): then only error.status carries the HTTP code.\n  const code = Number((body && body.code) || (m && m[1]) || (typeof e === 'object' && (e.status || e.httpCode)) || 0) || 0;\n  const plain = { 429: 'every PixVerse account is running at its job limit', 502: 'bad gateway', 504: 'timed out', 500: 'server error' };\n  const text = (body && typeof body.error === 'string' && body.error) || (!m && plain[code]) || (typeof e === 'object' && e.description) || msg || 'no answer';\n  return { code, text: String(text).slice(0, 500) };\n};\n// 429 = every account (or the pinned one) is at its job limit, or PixVerse's own concurrent limit: nothing was made.\nconst nothingMade = err => err.code === 429;\n// 596 = the account's PixVerse login failed: nothing was made. 422 = PixVerse moderation refused the prompt: nothing was made.\n// Any other 5xx, or no answer at all: the job may have started and used credits, so it is never sent again.\nconst mayBeMade = err => !err.code || (err.code >= 500 && err.code !== 596);\nconst SETUP = 'https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch';\nconst explain = (err, what) => {\n  if (err.code === 401) return `${what}: the useapi.net API token was refused. Open the \"useapi.net API token\" credential and check it: Name Authorization, Value Bearer followed by your token.`;\n  if (err.code === 402) return `${what}: ${err.text}. Check your useapi.net subscription.`;\n  if (err.code === 404) return `${what}: ${err.text}. The email column must be a PixVerse account connected at useapi.net (${SETUP}).`;\n  if (err.code === 412) return `${what}: ${err.text} Nothing was charged. Top up or upgrade the PixVerse plan, or pick another account, then set status to new.`;\n  if (err.code === 422) return `${what}: PixVerse moderation refused the prompt (${err.text}). Nothing was made. Change the prompt, then set status to new.`;\n  if (err.code === 400) return `${what}: ${err.text}. Fix the row, then set status to new.`;\n  if (err.code === 596) return `${what}: the PixVerse login of that account failed (${err.text}). Nothing was made. Reconnect the account at useapi.net (${SETUP}), then set status to new.`;\n  if (!err.code) return `${what}: no answer from useapi.net (${err.text}).`;\n  return `${what}: ${err.text} (HTTP ${err.code})`;\n};\nconst stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';\n\n// A video that is still being made answers 404 (and has no final status yet): nothing is written. A finished one goes on\n// to the Drive copy; a moderated or failed one gets an error note.\nconst S = $('Settings').first().json;\nconst out = [];\n$input.all().forEach((it, i) => {\n  const plan = $('Plan the tick').itemMatching(i).json;\n  const j = it.json, u = { row_number: plan.row_number };\n  const age = plan.started ? (Date.now() - Date.parse(plan.started.replace(' UTC', ':00Z').replace(' ', 'T'))) / 60000 : 0;\n  const late = age > S.giveUpAfterMinutes;\n  const push = (route, extra) => out.push({ json: { route, update: u, ...extra }, pairedItem: i });\n  const e = apiErr(j);\n  if (e) {\n    if (e.code === 404 && !late) return;  // still processing (or deleted): wait for the next tick\n    if (e.code === 404) { u.status = 'check job'; u.note = `The video is still not available ${S.giveUpAfterMinutes} minutes after the start (404: ${e.text}). It may have been deleted in PixVerse, moderated, or the account ran out of credits. Check PixVerse, then set status to new to run it again.`; return push('row'); }\n    u.note = `${stamp()}: the video could not be read (${e.code || 'no answer'}: ${e.text}). Tries again next tick.`;\n    return push('row');\n  }\n  if (!j.video_status_final) {\n    if (late) { u.status = 'check job'; u.note = `Still ${j.video_status_name || 'running'} ${S.giveUpAfterMinutes} minutes after the start. Check PixVerse, then set status to new to run it again.`; return push('row'); }\n    return;\n  }\n  if (j.video_status_name !== 'COMPLETED') {\n    u.status = 'error';\n    u.note = `PixVerse could not make it (${j.video_status_name}). MODERATED means the prompt or image was refused. Change the row, then set status to new.`;\n    return push('row');\n  }\n  if (!j.url) { u.status = 'check job'; u.note = 'The video finished without a link.'; return push('row'); }\n  push('finished', { url: j.url, video_id: plan.video_id });\n});\nreturn out;\n"
+      },
+      "name": "Video result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3620,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ {\"finished\": 0, \"row\": 1}[$json.route] ?? 1 }}"
+      },
+      "name": "Video next",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        3840,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst apiErr = j => {\n  if (!j || !j.error || j.video_id || j.video_status_name || j.result || j.available) return null;\n  const e = j.error;\n  const msg = typeof e === 'string' ? e : String(e.message || '');\n  let body = typeof e === 'string' ? j : null;\n  const m = msg.match(/^(\\d{3}) - ([\\s\\S]*)$/);\n  if (m) { try { body = JSON.parse(m[2]); if (typeof body === 'string') body = JSON.parse(body); } catch (x) { body = null; } }\n  // n8n keeps the answer's body in the message for most codes ('400 - \"{...}\"'), but swaps in its own text for some\n  // (429: \"Try spacing your requests out...\"): then only error.status carries the HTTP code.\n  const code = Number((body && body.code) || (m && m[1]) || (typeof e === 'object' && (e.status || e.httpCode)) || 0) || 0;\n  const plain = { 429: 'every PixVerse account is running at its job limit', 502: 'bad gateway', 504: 'timed out', 500: 'server error' };\n  const text = (body && typeof body.error === 'string' && body.error) || (!m && plain[code]) || (typeof e === 'object' && e.description) || msg || 'no answer';\n  return { code, text: String(text).slice(0, 500) };\n};\n// 429 = every account (or the pinned one) is at its job limit, or PixVerse's own concurrent limit: nothing was made.\nconst nothingMade = err => err.code === 429;\n// 596 = the account's PixVerse login failed: nothing was made. 422 = PixVerse moderation refused the prompt: nothing was made.\n// Any other 5xx, or no answer at all: the job may have started and used credits, so it is never sent again.\nconst mayBeMade = err => !err.code || (err.code >= 500 && err.code !== 596);\nconst SETUP = 'https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch';\nconst explain = (err, what) => {\n  if (err.code === 401) return `${what}: the useapi.net API token was refused. Open the \"useapi.net API token\" credential and check it: Name Authorization, Value Bearer followed by your token.`;\n  if (err.code === 402) return `${what}: ${err.text}. Check your useapi.net subscription.`;\n  if (err.code === 404) return `${what}: ${err.text}. The email column must be a PixVerse account connected at useapi.net (${SETUP}).`;\n  if (err.code === 412) return `${what}: ${err.text} Nothing was charged. Top up or upgrade the PixVerse plan, or pick another account, then set status to new.`;\n  if (err.code === 422) return `${what}: PixVerse moderation refused the prompt (${err.text}). Nothing was made. Change the prompt, then set status to new.`;\n  if (err.code === 400) return `${what}: ${err.text}. Fix the row, then set status to new.`;\n  if (err.code === 596) return `${what}: the PixVerse login of that account failed (${err.text}). Nothing was made. Reconnect the account at useapi.net (${SETUP}), then set status to new.`;\n  if (!err.code) return `${what}: no answer from useapi.net (${err.text}).`;\n  return `${what}: ${err.text} (HTTP ${err.code})`;\n};\nconst stamp = () => new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';\n\nconst S = $('Settings').first().json;\nreturn $input.all().map((it, i) => {\n  const u = { ...it.json.update, status: 'done', finished: stamp(), video_url: it.json.url, note: '' };\n  return { json: { update: u, drive: !!S.saveToDrive, url: it.json.url, name: `pixverse-row-${u.row_number}-${String(it.json.video_id).split('video:').pop()}.mp4` }, pairedItem: i };\n});\n"
+      },
+      "name": "Finish row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9eb8d650-2fda-5be9-a3fe-a0c43238b711",
+              "leftValue": "={{ $json.drive }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Save to Drive?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 300000,
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "name": "Download video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        1300
+      ],
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Finish row').item.json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Settings').first().json.driveFolderId || 'root' }}"
+        },
+        "options": {}
+      },
+      "name": "Upload to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1540,
+        1300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "googleDriveCred",
+          "name": "Google Drive account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn $input.all().map((it, i) => {\n  const f = $('Finish row').itemMatching(i).json;\n  const u = { ...f.update };\n  if (it.json.id) u.drive_link = `https://drive.google.com/file/d/${it.json.id}/view`;\n  else u.note = `Done, but the Drive copy failed (${(it.json.error && it.json.error.message) || 'no answer'}). video_url still has it.`;\n  return { json: { update: u }, pairedItem: i };\n});\n"
+      },
+      "name": "Drive link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Every change to a row arrives here as { update }: write only those columns, matched on row_number.\nreturn $input.all().filter(it => it.json && it.json.update).map(it => ({ json: it.json.update }));\n"
+      },
+      "name": "Row values",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        1300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Settings').first().json.sheetId }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Settings').first().json.sheetName }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image_url",
+              "displayName": "image_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "quality",
+              "displayName": "quality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "duration",
+              "displayName": "duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "account",
+              "displayName": "account",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "started",
+              "displayName": "started",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "finished",
+              "displayName": "finished",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "video_url",
+              "displayName": "video_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_link",
+              "displayName": "drive_link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Update row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2520,
+        1300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "googleSheetsCred",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Seedance 2.5 videos on your PixVerse plan, from a Google Sheet\n\n### How it works\nFor creators and agencies who make many AI videos on a PixVerse plan they already pay for, with the [useapi.net PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch), a third-party API, not affiliated with PixVerse. One plan, many models: the `model` column picks Seedance 2.5, PixVerse v6, Kling 4.0, Veo 3.1 or MiniMax H3 per row.\n\n1. Each row is one video: a prompt, an optional `image_url` (image-to-video), and optional model, quality, duration and aspect ratio. A form adds many prompts at once.\n2. Every 3 minutes the workflow checks each new row against the [model's limits](https://useapi.net/docs/api-pixverse-v2/model-capabilities?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch), starts it on an account with a free job slot, and saves the `video_id` at once.\n3. It then reads the running videos, and writes the link, status and an optional Google Drive copy back to the row.\n\nBusy accounts wait for the next tick. Refused or invalid rows get `error` and a note. A start that may have used credits is never resent: `check job`.\n\n### Setup\n- [ ] A [useapi.net subscription ($15/month) and API token](https://useapi.net/docs/start-here/setup-useapi?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch), and your own PixVerse plan [connected there](https://useapi.net/docs/start-here/setup-pixverse?utm_source=n8n.io&utm_medium=referral&utm_campaign=pixverse-sheet-batch).\n- [ ] A Header Auth credential (Name `Authorization`, Value `Bearer <token>`) on the useapi.net HTTP nodes.\n- [ ] Google Sheets and Drive credentials, and `sheetId` in **Settings**.\n- [ ] A tab with these columns in row 1: `prompt`, `image_url`, `model`, `quality`, `duration`, `aspect_ratio`, `email`, `status`, `account`, `video_id`, `started`, `finished`, `video_url`, `drive_link`, `note`.\n- [ ] A Basic Auth credential on the form, then publish the workflow.\n\n### Customization\n**Settings** holds the default model, quality and duration, the per-tick limits and the Drive folder. Set a row's `status` to `new` to run it again.",
+        "width": 700,
+        "height": 906
+      },
+      "name": "Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Start\nA form or a 3-minute schedule. **Settings** holds the sheet id and every default.",
+        "width": 680,
+        "height": 526,
+        "color": 7
+      },
+      "name": "Note: start",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -70,
+        -136
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Add prompts from the form\nOne prompt per line, `prompt | image link` for image-to-video. Each line becomes a `new` row.",
+        "width": 680,
+        "height": 348,
+        "color": 7
+      },
+      "name": "Note: form",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        810,
+        -158
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Plan the tick\nFree reads of your accounts, their free job slots and the sheet. Each new row is checked against its model's limits.",
+        "width": 1120,
+        "height": 326,
+        "color": 7
+      },
+      "name": "Note: plan",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        810,
+        284
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Image rows\nThe image is fetched and uploaded to PixVerse, then used as the first frame. A failure here costs nothing.",
+        "width": 900,
+        "height": 326,
+        "color": 7
+      },
+      "name": "Note: image",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2230,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Start the video\nThe paid call: the row's model makes the video and its id is saved at once. It is never retried by n8n.",
+        "width": 680,
+        "height": 348,
+        "color": 7
+      },
+      "name": "Note: create",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2230,
+        482
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Read the running videos\nA video still being made writes nothing. Moderated or failed ones get an error note.",
+        "width": 680,
+        "height": 326,
+        "color": 7
+      },
+      "name": "Note: poll",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3330,
+        764
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Save to Google Drive\nOptional: downloads the finished mp4 and uploads it to your Drive folder.",
+        "width": 1120,
+        "height": 326,
+        "color": 7
+      },
+      "name": "Note: drive",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        810,
+        1164
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Write back\nOne update per row, matched on its row number: status, links and notes.",
+        "width": 460,
+        "height": 348,
+        "color": 7
+      },
+      "name": "Note: write",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2230,
+        1142
+      ]
+    }
+  ],
+  "connections": {
+    "Add to the PixVerse queue": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every 3 minutes": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "From the form?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From the form?": {
+      "main": [
+        [
+          {
+            "node": "Form rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Accounts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form rows": {
+      "main": [
+        [
+          {
+            "node": "Append rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append rows": {
+      "main": [
+        [
+          {
+            "node": "Queued",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accounts": {
+      "main": [
+        [
+          {
+            "node": "Free slots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Free slots": {
+      "main": [
+        [
+          {
+            "node": "Read rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read rows": {
+      "main": [
+        [
+          {
+            "node": "Plan the tick",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan the tick": {
+      "main": [
+        [
+          {
+            "node": "Row step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Row step": {
+      "main": [
+        [
+          {
+            "node": "Prepare start",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download image": {
+      "main": [
+        [
+          {
+            "node": "Upload image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload image": {
+      "main": [
+        [
+          {
+            "node": "Image ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image ready": {
+      "main": [
+        [
+          {
+            "node": "Image uploaded?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image uploaded?": {
+      "main": [
+        [
+          {
+            "node": "Prepare start",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare start": {
+      "main": [
+        [
+          {
+            "node": "Start video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start video": {
+      "main": [
+        [
+          {
+            "node": "Start result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start result": {
+      "main": [
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read video": {
+      "main": [
+        [
+          {
+            "node": "Video result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Video result": {
+      "main": [
+        [
+          {
+            "node": "Video next",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Video next": {
+      "main": [
+        [
+          {
+            "node": "Finish row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Finish row": {
+      "main": [
+        [
+          {
+            "node": "Save to Drive?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Drive?": {
+      "main": [
+        [
+          {
+            "node": "Download video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download video": {
+      "main": [
+        [
+          {
+            "node": "Upload to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Drive": {
+      "main": [
+        [
+          {
+            "node": "Drive link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive link": {
+      "main": [
+        [
+          {
+            "node": "Row values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Row values": {
+      "main": [
+        [
+          {
+            "node": "Update row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

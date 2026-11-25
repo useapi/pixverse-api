@@ -1,0 +1,4 @@
+prompt,image_url,model,quality,duration,aspect_ratio,email,status,account,video_id,started,finished,video_url,drive_link,note
+"A paper boat drifts down a rainy city street at dusk, neon reflections in the puddles",,seedance-2.5,720p,6,16:9,,new,,,,,,,
+"Slow push-in on a lighthouse in a storm, waves crashing on the rocks",,v6,1080p,8,9:16,,new,,,,,,,
+The boat sails out of frame toward the sunset,https://example.com/your-image.jpg,seedance-2.5,720p,6,,,new,,,,,,,
