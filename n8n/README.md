@@ -4,6 +4,8 @@
 
 [`pixverse-sheet-batch.json`](./pixverse-sheet-batch.json) is a ready-to-import [n8n](https://n8n.io) workflow that turns a Google Sheet into a PixVerse video queue and keeps your PixVerse accounts busy. Each row is one video, from text or from an image, and the `model` column picks Seedance 2.5, Seedance 2.5 Flash, PixVerse V6, Kling 4.0, Veo 3.1 (Fast, Lite or Standard) or MiniMax H3 (or H3 Max) per row. It runs through the [useapi.net PixVerse API](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api), a third-party API, not affiliated with PixVerse, on your own PixVerse plan and the PixVerse accounts you connect there. It is built from core n8n nodes, with no community nodes.
 
+Also on n8n.io: [Queue and render PixVerse Seedance videos with Google Sheets and Drive](https://n8n.io/workflows/23614)
+
 You need a useapi.net subscription ($15 a month) and your PixVerse plan [connected at useapi.net](https://useapi.net/docs/start-here/setup-pixverse?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
 ![The workflow](./pixverse-sheet-batch-00-canvas.png)
