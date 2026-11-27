@@ -110,6 +110,8 @@ More answers: [PixVerse API questions](https://useapi.net/docs/api-pixverse-v2?u
 
 [useapi.net](https://useapi.net/?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api) is a third-party REST API for AI services. The PixVerse API runs on your [PixVerse subscription](https://app.pixverse.ai/subscribe), so you spend its credits at website rates instead of metered developer-API pricing. See the models and pricing on the [PixVerse API overview](https://useapi.net/docs/api-pixverse-v2?utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
 
+Is PixVerse working right now? See the [status page](https://useapi.net/status?api=pixverse&utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api). Yesterday's success rates and job times across all customers are in the [daily stats](https://useapi.net/docs/account-management/get-stats-daily?type=pixverse&utm_source=github.com&utm_medium=referral&utm_campaign=pixverse-api).
+
 Visit our [Discord Server](https://discord.gg/w28uK3cnmF) or [Telegram Channel](https://t.me/use_api) for any support questions and concerns.
 
 We regularly post guides and tutorials on the [YouTube Channel](https://www.youtube.com/@useapi-net).
